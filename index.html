@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PinPin — Password Analyzer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='52' font-size='52'>🐱</text></svg>" />
+</head>
+<body>
+
+  <div class="grid-overlay"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <svg class="cat-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- ears -->
+        <polygon points="10,28 4,8 20,20" fill="#ff2d78"/>
+        <polygon points="54,28 60,8 44,20" fill="#ff2d78"/>
+        <polygon points="12,26 7,12 19,21" fill="#ff6fa8"/>
+        <polygon points="52,26 57,12 45,21" fill="#ff6fa8"/>
+        <!-- head -->
+        <ellipse cx="32" cy="36" rx="24" ry="22" fill="#ff2d78"/>
+        <!-- face shading -->
+        <ellipse cx="32" cy="38" rx="18" ry="17" fill="#c4005a" opacity="0.35"/>
+        <!-- eyes -->
+        <ellipse cx="22" cy="32" rx="6" ry="7" fill="#fff"/>
+        <ellipse cx="42" cy="32" rx="6" ry="7" fill="#fff"/>
+        <ellipse cx="22" cy="33" rx="3.5" ry="5" fill="#1a0a14"/>
+        <ellipse cx="42" cy="33" rx="3.5" ry="5" fill="#1a0a14"/>
+        <ellipse cx="21" cy="31" rx="1.5" ry="2" fill="white"/>
+        <ellipse cx="41" cy="31" rx="1.5" ry="2" fill="white"/>
+        <!-- nose -->
+        <polygon points="32,41 29,44 35,44" fill="#ff6fa8"/>
+        <!-- mouth -->
+        <path d="M28 45 Q32 50 36 45" stroke="#ff6fa8" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- whiskers left -->
+        <line x1="8" y1="40" x2="24" y2="42" stroke="#ff6fa8" stroke-width="1" opacity="0.8"/>
+        <line x1="8" y1="44" x2="24" y2="44" stroke="#ff6fa8" stroke-width="1" opacity="0.8"/>
+        <line x1="8" y1="48" x2="24" y2="46" stroke="#ff6fa8" stroke-width="1" opacity="0.8"/>
+        <!-- whiskers right -->
+        <line x1="56" y1="40" x2="40" y2="42" stroke="#ff6fa8" stroke-width="1" opacity="0.8"/>
+        <line x1="56" y1="44" x2="40" y2="44" stroke="#ff6fa8" stroke-width="1" opacity="0.8"/>
+        <line x1="56" y1="48" x2="40" y2="46" stroke="#ff6fa8" stroke-width="1" opacity="0.8"/>
+        <!-- circuit lines on forehead -->
+        <line x1="28" y1="22" x2="28" y2="17" stroke="#ff6fa8" stroke-width="1" opacity="0.6"/>
+        <line x1="28" y1="17" x2="22" y2="17" stroke="#ff6fa8" stroke-width="1" opacity="0.6"/>
+        <circle cx="22" cy="17" r="1.5" fill="#ff6fa8" opacity="0.8"/>
+        <line x1="36" y1="22" x2="36" y2="17" stroke="#ff6fa8" stroke-width="1" opacity="0.6"/>
+        <line x1="36" y1="17" x2="42" y2="17" stroke="#ff6fa8" stroke-width="1" opacity="0.6"/>
+        <circle cx="42" cy="17" r="1.5" fill="#ff6fa8" opacity="0.8"/>
+        <line x1="32" y1="20" x2="32" y2="14" stroke="#ff6fa8" stroke-width="1" opacity="0.6"/>
+        <circle cx="32" cy="13" r="2" fill="#ff2d78" opacity="0.9"/>
+      </svg>
+      <span class="nav-name">PinPin</span>
+    </div>
+    <div class="nav-tagline">Password Strength Analyzer</div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main-wrapper">
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1 class="hero-title">How strong is<br><span class="pink-text">your password?</span></h1>
+      <p class="hero-sub">Real-time analysis, weakness detection &amp; strong password suggestions — powered by entropy math.</p>
+    </section>
+
+    <!-- Analyzer Card -->
+    <div class="card analyzer-card">
+
+      <div class="input-group">
+        <label class="field-label" for="pw-input">Your password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input
+            id="pw-input"
+            class="pw-input"
+            type="password"
+            placeholder="Type or paste your password..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="eye-btn" id="eye-btn" aria-label="Toggle password visibility" title="Show/hide">
+            <svg id="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Meter -->
+      <div class="meter-section">
+        <div class="meter-bar-bg">
+          <div class="meter-bar-fill" id="meter-fill"></div>
+        </div>
+        <div class="meter-meta">
+          <span class="strength-label" id="strength-label">Enter a password to analyze</span>
+          <span class="crack-time" id="crack-time" style="display:none">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            crack: <strong id="crack-val"></strong>
+          </span>
+        </div>
+      </div>
+
+      <!-- Checks -->
+      <div class="checks-section">
+        <p class="section-label">Requirements</p>
+        <div class="checks-grid" id="checks-grid">
+          <div class="check-item" id="chk-len">
+            <span class="check-icon" id="ico-len">○</span>
+            <span>8+ characters</span>
+          </div>
+          <div class="check-item" id="chk-upper">
+            <span class="check-icon" id="ico-upper">○</span>
+            <span>Uppercase (A–Z)</span>
+          </div>
+          <div class="check-item" id="chk-lower">
+            <span class="check-icon" id="ico-lower">○</span>
+            <span>Lowercase (a–z)</span>
+          </div>
+          <div class="check-item" id="chk-digit">
+            <span class="check-icon" id="ico-digit">○</span>
+            <span>Numbers (0–9)</span>
+          </div>
+          <div class="check-item" id="chk-sym">
+            <span class="check-icon" id="ico-sym">○</span>
+            <span>Symbols (!@#...)</span>
+          </div>
+          <div class="check-item" id="chk-dict">
+            <span class="check-icon" id="ico-dict">○</span>
+            <span>No common words</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weaknesses -->
+      <div class="weaknesses-section" id="weaknesses-section" style="display:none">
+        <p class="section-label warn-label">⚠ Weaknesses detected</p>
+        <div class="weakness-list" id="weakness-list"></div>
+      </div>
+
+      <!-- Entropy info -->
+      <div class="entropy-row" id="entropy-row" style="display:none">
+        <div class="stat-pill">
+          <span class="stat-label">Entropy</span>
+          <span class="stat-val" id="entropy-val">—</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">Length</span>
+          <span class="stat-val" id="len-val">—</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">Char pool</span>
+          <span class="stat-val" id="pool-val">—</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Suggestions Card -->
+    <div class="card suggest-card">
+      <div class="suggest-header">
+        <div>
+          <p class="card-title">Strong Password Generator</p>
+          <p class="card-sub">Cryptographically random, high-entropy passwords</p>
+        </div>
+        <button class="gen-btn" id="gen-btn">
+          ✦ Generate
+        </button>
+      </div>
+
+      <div class="suggestions" id="suggestions">
+        <div class="suggestion-placeholder">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <p>Click Generate to get strong password suggestions</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tips Card -->
+    <div class="card tips-card">
+      <p class="card-title">Secure Password Practices</p>
+      <div class="tips-grid">
+        <div class="tip-item">
+          <span class="tip-icon">🐱</span>
+          <div>
+            <strong>Use a passphrase</strong>
+            <p>Four random words strung together beats most complex passwords</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <span class="tip-icon">🔄</span>
+          <div>
+            <strong>Never reuse passwords</strong>
+            <p>One breach shouldn't compromise all your accounts</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <span class="tip-icon">📱</span>
+          <div>
+            <strong>Use a password manager</strong>
+            <p>Bitwarden, 1Password, or KeePass — let software remember</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <span class="tip-icon">🛡️</span>
+          <div>
+            <strong>Enable 2FA everywhere</strong>
+            <p>A second factor stops most account takeover attacks</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <svg class="footer-cat" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="10,28 4,8 20,20" fill="#ff2d78" opacity="0.5"/>
+        <polygon points="54,28 60,8 44,20" fill="#ff2d78" opacity="0.5"/>
+        <ellipse cx="32" cy="36" rx="24" ry="22" fill="#ff2d78" opacity="0.5"/>
+        <ellipse cx="22" cy="33" rx="3" ry="4" fill="#1a0a14" opacity="0.5"/>
+        <ellipse cx="42" cy="33" rx="3" ry="4" fill="#1a0a14" opacity="0.5"/>
+      </svg>
+      <span>PinPin &mdash; because your passwords deserve a guardian 🐾</span>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
